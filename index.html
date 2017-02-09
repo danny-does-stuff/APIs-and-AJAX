@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<style type="text/css">
+	#content {
+		display: flex;
+	}
+
+	.spotify-result {
+		display: flex;
+	}
+
+	.cover {
+		width: 100px;
+		height: 100px;
+		background-size: cover;
+	}
+</style>
+
+<script type="text/javascript">
+	function init() {
+		gapi.client.setApiKey('AIzaSyAxi1EbwfhRLsbFnp2jgJWjadiv5Qx3UPw');
+		gapi.client.load('youtube', 'v3', function() {
+			// YouTube api is ready
+		})
+	}
+</script>
+
+<head>
+	<title>Spotify and YouTube</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="https://apis.google.com/js/client.js?onload=init"></script>
+	<!-- <script src="https://apis.google.com/js/api.js"></script> -->
+
+
+	<!-- <script src="snake.js"></script> -->
+	<!-- <link rel="stylesheet" href="styles.css"> -->
+</head>
+<body>
+	<header>
+		<h1>Spotify YouTube Searcher</h1>
+	</header>
+	<div id="content">
+		<div id="left-content">
+			<form>
+				<input type="text" id="spotify-search">
+				<input type="submit" id="spotify-submit" value="search">
+			</form>
+
+			<div id="spotify-results">
+				
+			</div>
+		</div>
+		<div id="right-content">
+
+			<div id="youtube-results">
+				
+			</div>
+		</div>
+	</div>
+
+</body>
+
+<script type="text/javascript">
+
+	$('#spotify-submit').click(function(e) {
+		e.preventDefault();
+		$.ajax({
+			url: 'https://api.spotify.com/v1/search',
+			data: {
+				q: $('#spotify-search').val(),
+				type: 'track'
+			},
+			success: function (response) {
+				console.log('response', response);
+				displaySpotifyResults(response.tracks.items);
+			}
+		});
+	});
+
+	function displaySpotifyResults(results) {
+		results.forEach(function(item) {
+			$result = $('<div class="spotify-result"><div style="background-image:url(' + item.album.images[0].url + ')" class="cover"></div><div>' + item.name + '</div></div>');
+
+			$result.click(function() {
+				searchYoutubeWithLyricsFromSong(item);
+			});
+
+			$('#spotify-results').append($result);
+		});
+	}
+
+	function searchYoutubeWithLyricsFromSong(song) {
+		$.ajax({
+			url: 'http://api.musixmatch.com/ws/1.1/track.search',
+			data: {
+				apikey: 'dd79cd78f21dbf4ba352326e08b632ec',
+				q_artist: song.artists[0].name,
+				q_track: song.name
+			},
+			dataType: 'json',
+			success: function(response) {
+				var trackID = response.message.body.track_list[0].track.track_id;
+
+				getSongLyrics(trackID);
+			},
+			error: function(err) {
+				console.error(err);
+			}
+		});
+	}
+
+	function getSongLyrics(id) {
+		$.ajax({
+			url: 'http://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=' + id,
+			data: {
+				apikey: 'dd79cd78f21dbf4ba352326e08b632ec'
+			},
+			dataType: 'json',
+			success: function(response) {
+				var lyrics = response.message.body.lyrics.lyrics_body;
+
+				searchYoutubeFromLyrics(lyrics);
+			},
+			error: function(err) {
+				console.error(err);
+			}
+		});
+	}
+
+	function searchYoutubeFromLyrics(lyrics) {
+		var lyricsArray = lyrics.replace(/\n/g, " ").split(' ');
+
+		var randomLyrics = 'funny ';
+		for (var i = 0; i < 5; i++) {
+			randomLyrics += lyricsArray[Math.floor(Math.random() * lyricsArray.length)];
+			if (i != 4) {
+				randomLyrics += ' ';
+			}
+		}
+
+		console.log(randomLyrics);
+
+		var request = gapi.client.youtube.search.list({
+			part: 'snippet',
+			type: 'video',
+			q: randomLyrics,
+			order: 'viewCount'
+		});
+
+		request.execute(function(response) {
+			$('#youtube-results').html(`<h2>Search Term: "${randomLyrics}"</h2>`);
+			displayYoutubeResults(response.items)
+		});
+	}
+
+	function displayYoutubeResults(videos) {
+
+		videos.forEach(function(video) {
+			console.log(video);
+
+			var videoID = video.id.videoId;
+			var title = video.snippet.title;
+			var description = video.snippet.description;
+
+			$('<div class="youtube-result">')
+				.html(`<h2>${title}</h2><iframe width="640" height="360" src="//www.youtube.com/embed/${videoID} frameborder="0" allowfullscreen></iframe>`)
+				.appendTo($('#youtube-results'));
+
+		});
+	}
+
+</script>
+</html>
