@@ -2,8 +2,17 @@
 <html>
 
 <style type="text/css">
+	body {
+		height: 100%;
+		background-image: url("images/youtube-and-spotify.png");
+		background-attachment: fixed;
+		background-repeat: no-repeat;
+		background-size: cover;
+	}
+
 	#content {
 		display: flex;
+		margin-left: 500px;
 	}
 
 	.spotify-result {
@@ -14,6 +23,33 @@
 		width: 100px;
 		height: 100px;
 		background-size: cover;
+	}
+
+	h1 {
+		text-align: center;
+		font-family: sans-serif;
+		color: white;
+	}
+
+	p {
+		text-align: center;
+		font-family: sans-serif;
+		color: white;
+	}
+
+	form {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	#form-div {
+		display: block;
+		text-align: center;
+	}
+
+	.item-name {
+		color: black;
+		font-size: 30px;
 	}
 </style>
 
@@ -39,13 +75,21 @@
 <body>
 	<header>
 		<h1>Spotify YouTube Searcher</h1>
+		<p>Search for music on Spotify, then click an album to get a Youtube video from randomly selected lyrics.</p>
 	</header>
+
+	<div id="form-div">
+		<form>
+			<input type="text" id="spotify-search">
+			<input type="submit" id="spotify-submit" value="Search">
+		</form>
+	</div>
+
+	<br>
+	<br>
+
 	<div id="content">
 		<div id="left-content">
-			<form>
-				<input type="text" id="spotify-search">
-				<input type="submit" id="spotify-submit" value="search">
-			</form>
 
 			<div id="spotify-results">
 				
@@ -81,7 +125,10 @@
 	function displaySpotifyResults(results) {
 		$('#spotify-results').empty();
 		results.forEach(function(item) {
-			$result = $('<div class="spotify-result"><div style="background-image:url(' + item.album.images[0].url + ')" class="cover"></div><div>' + item.name + '</div></div>');
+			$result = $('<div class="spotify-result"><div style="background-image:url(' + item.album.images[0].url + ')" class="cover"></div>' +
+				'<br>' +
+				'<div class="item-name">' + item.name + '</div>' +
+				'</div>' + '<br>');
 
 			$result.click(function() {
 				searchYoutubeWithLyricsFromSong(item);
