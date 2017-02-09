@@ -12,17 +12,42 @@
 
 	#content {
 		display: flex;
-		margin-left: 500px;
+		justify-content: space-around;
+	}
+
+	#left-content {
+		width: 50%;
+		padding: 40px;
+	}
+
+	#right-content {
+		width: 50%;
+	}
+
+	.result {
+		border-radius: 3px;
+		padding: 8px;
+		margin: 8px;
+		color: white;
+		box-shadow: 2px 2px 2px black;
 	}
 
 	.spotify-result {
 		display: flex;
+		background-color: #2fd566;
+		margin-right: 48px;
+	}
+
+	.youtube-result {
+		background-color: #f5f5f5;
+		color: black;
 	}
 
 	.cover {
 		width: 100px;
 		height: 100px;
 		background-size: cover;
+		margin-right: 16px;
 	}
 
 	h1 {
@@ -66,11 +91,6 @@
 	<title>Spotify and YouTube</title>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 	<script src="https://apis.google.com/js/client.js?onload=init"></script>
-	<!-- <script src="https://apis.google.com/js/api.js"></script> -->
-
-
-	<!-- <script src="snake.js"></script> -->
-	<!-- <link rel="stylesheet" href="styles.css"> -->
 </head>
 <body>
 	<header>
@@ -90,16 +110,10 @@
 
 	<div id="content">
 		<div id="left-content">
-
-			<div id="spotify-results">
-				
-			</div>
+			<div id="spotify-results"></div>
 		</div>
 		<div id="right-content">
-
-			<div id="youtube-results">
-				
-			</div>
+			<div id="youtube-results"></div>
 		</div>
 	</div>
 
@@ -125,8 +139,7 @@
 	function displaySpotifyResults(results) {
 		$('#spotify-results').empty();
 		results.forEach(function(item) {
-			$result = $('<div class="spotify-result"><div style="background-image:url(' + item.album.images[0].url + ')" class="cover"></div>' +
-				'<br>' +
+			$result = $('<div class="result spotify-result"><div style="background-image:url(' + item.album.images[0].url + ')" class="cover"></div>' +
 				'<div class="item-name">' + item.name + '</div>' +
 				'</div>' + '<br>');
 
@@ -221,7 +234,7 @@
 			var title = video.snippet.title;
 			var description = video.snippet.description;
 
-			$('<div class="youtube-result">')
+			$('<div class="result youtube-result">')
 				.html(`<h2>${title}</h2><iframe width="640" height="360" src="http://www.youtube.com/embed/${videoID}?rel=0 frameborder="0" allowfullscreen></iframe>`)
 				.appendTo($('#youtube-results'));
 
