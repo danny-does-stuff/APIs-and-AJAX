@@ -96,11 +96,14 @@
 			data: {
 				apikey: 'dd79cd78f21dbf4ba352326e08b632ec',
 				q_artist: song.artists[0].name,
-				q_track: song.name
+				q_track: song.name,
+				f_has_lyrics: 1,
+				format: 'jsonp',
+				callback: 'jsonpCallback'
 			},
 			dataType: 'jsonp',
-			success: function(response) {
-				console.log('trackid', response);
+			jsonpCallback: 'jsonpCallback',
+			success : function(response) {
 				var trackID = response.message.body.track_list[0].track.track_id;
 
 				getSongLyrics(trackID);
