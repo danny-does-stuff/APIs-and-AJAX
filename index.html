@@ -79,6 +79,7 @@
 	});
 
 	function displaySpotifyResults(results) {
+		$('#spotify-results').empty();
 		results.forEach(function(item) {
 			$result = $('<div class="spotify-result"><div style="background-image:url(' + item.album.images[0].url + ')" class="cover"></div><div>' + item.name + '</div></div>');
 
@@ -163,6 +164,9 @@
 
 	function displayYoutubeResults(videos) {
 
+		if (videos.length == 0) {
+			$('#youtube-results').append($('<h4>No Results</h4>'));
+		}
 		videos.forEach(function(video) {
 			console.log(video);
 
