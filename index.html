@@ -118,9 +118,12 @@
 		$.ajax({
 			url: 'http://api.musixmatch.com/ws/1.1/track.lyrics.get?track_id=' + id,
 			data: {
-				apikey: 'dd79cd78f21dbf4ba352326e08b632ec'
+				apikey: 'dd79cd78f21dbf4ba352326e08b632ec',
+				format: 'jsonp',
+				callback: 'jsonp_callback'
 			},
-			dataType: 'json',
+			dataType: 'jsonp',
+			jsonpCallback: 'jsonp_callback',
 			success: function(response) {
 				var lyrics = response.message.body.lyrics.lyrics_body;
 
