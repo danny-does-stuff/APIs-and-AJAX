@@ -98,8 +98,9 @@
 				q_artist: song.artists[0].name,
 				q_track: song.name
 			},
-			dataType: 'json',
+			dataType: 'jsonp',
 			success: function(response) {
+				console.log('trackid', response);
 				var trackID = response.message.body.track_list[0].track.track_id;
 
 				getSongLyrics(trackID);
