@@ -199,7 +199,7 @@
 	function searchYoutubeFromLyrics(lyrics) {
 		var lyricsArray = lyrics.replace(/\n/g, " ").split(' ');
 
-		var randomLyrics = 'funny ';
+		var randomLyrics = '';
 		for (var i = 0; i < 5; i++) {
 			randomLyrics += lyricsArray[Math.floor(Math.random() * lyricsArray.length)];
 			if (i != 4) {
